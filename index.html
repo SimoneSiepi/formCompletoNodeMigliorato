@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/Style.css">
+    <title>form completo in node</title>
+</head>
+<body>
+    <form action="/html/recuperaDati.html" method="get">
+        <!-- nome -->
+        <label for="nome">Nome:</label><br>
+        <input type="text" id="nome" name="nome"><br>
+
+        <!-- cognome -->
+        <label for="cognome">Cognome:</label><br>
+        <input type="text" id="cognome" name="cognome"><br>
+
+        <!-- sesso -->
+        <input type="radio" id="scelta" name="scelta" value="Uomo">
+        <label for="Uomo">Uomo</label><br>
+        <input type="radio" id="scelta" name="scelta" value="Donna">
+        <label for="Donna">Donna</label><br>
+        <input type="radio" id="scelta" name="scelta" value="non binario">
+        <label for="non_binario">Non binario</label><br>
+
+        <!-- data di nascita -->
+        <label for="data_nascita">data di nascita:</label><br>
+        <input type="date" id="data_nascita" name="data_nascita"><br>
+
+        <!-- Eta -->
+        <label for="eta">Età</label><br>
+        <input type="number" id="eta" name="eta"><br>
+
+        <!-- informazioni aggiuntive -->
+        <label for="info">informazioni opzionali</label><br>
+        <textarea name="info" id="info" rows="5" cols="25"></textarea><br>
+
+        <input type="submit">
+
+    </form>
+</body>
+</html>
