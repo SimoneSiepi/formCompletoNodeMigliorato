@@ -5,3 +5,72 @@ input{
 label{
     margin-bottom: 10px;
 }
+
+.error{
+    color: red;
+}
+
+
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  header {
+    background-color: yellow;
+    padding: 30px;
+    text-align: center;
+    font-size: 35px;
+    color: black;
+  }
+  
+  nav {
+    float: left;
+    width: 30%;
+    padding: 20px;
+    height: 495px
+
+  }
+  
+  nav ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  article {
+    float: left;
+    padding: 20px;
+    width: 70%;
+    background-color: #f1f1f1;
+    height: 495px
+
+  }
+  
+
+  section::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  
+  footer {
+    background-color: orange;
+    padding: 10px;
+    text-align: center;
+    color: black;
+    margin-top: auto;
+  }
+  
+  @media (max-width: 600px) {
+    nav, article {
+      width: 100%;
+      height: auto;
+    }
+  }
