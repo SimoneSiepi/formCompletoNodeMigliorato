@@ -7,7 +7,7 @@
     <title>form completo in node</title>
 </head>
 <body>
-    <form action="recuperaDati" method="get">
+    <form action="/recuperaDati" method="get">
         <!-- nome -->
         <label for="nome">Nome:</label><br>
         <input type="text" id="nome" name="nome"><br>
@@ -26,11 +26,24 @@
 
         <!-- data di nascita -->
         <label for="data_nascita">data di nascita:</label><br>
-        <input type="date" id="data_nascita" name="data_nascita"><br>
+        <input type="text" id="data_nascita" name="data_nascita"><br>
 
         <!-- Eta -->
         <label for="eta">Età</label><br>
-        <input type="number" id="eta" name="eta"><br>
+        <input type="text" id="eta" name="eta"><br>
+
+        <!-- Email -->
+        <label for="email">Email</label><br>
+        <input type="text" id="email" name="email"><br>
+
+        <!-- Cibo Preferito -->
+        <p>Cibo Preferito</p><br>
+        <input type="checkbox" name="cibo" id="cibo1" value="pizza">
+        <label for="cibo1">Pizza</label><br>
+        <input type="checkbox" name="cibo" id="cibo2" value="pasta">
+        <label for="cibo2">Pasta</label><br>
+        <input type="checkbox" name="cibo" id="cibo3" value="risotto">
+        <label for="cibo3">Risotto</label><br>
 
         <!-- informazioni aggiuntive -->
         <label for="info">informazioni opzionali</label><br>

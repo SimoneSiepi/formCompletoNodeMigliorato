@@ -3,73 +3,35 @@ const http=require("http");
 const url = require("url");
 const path= require("path");
 
-/* function requestHandler(request,response){
-    let oggettoUrl=url.parse(request.url, "true");
-    console.log("href"+oggettoUrl.href);//fa visuliazzare il nome completo
-    const path=oggettoUrl.pathname;//serve per ottenere il nome completo della pagina richiesta
-    console.log("pathname:"+path);
-    switch (path) {
-        case "/":
-            fs.readFile("index.html",function(error,data){
-                if (error) {
-                    response.writeHead(404);
-                    response.end("pagina non trovta");
-                }else{
-                  response.writeHead(200,{"content-Type":"text/html"});
-                  response.write(data,"utf8");
-                  response.end();
-                }
-                
-            });
-            
-            break;
-            case "/css/Style.css":
-                fs.readFile("css/Style.css",function(error,data){
-                    if (error) {
-                        response.writeHead(404);
-                    }else{
-                        response.writeHead(200,{"content-Type":"text/css"});
-                        response.write(data,"utf8");
-                    }
-                    response.end();
-                });
-                break;
 
-        case "/html/recuperaDati.html":
-            const query=oggettoUrl.query;
-            const nome=oggettoUrl.query.nome;
-            const cognome=oggettoUrl.query.cognome;
-            const sesso=oggettoUrl.query.scelta;
-            const nascita=oggettoUrl.query.data_nascita;
-            const eta=oggettoUrl.query.eta;
-            const info=oggettoUrl.query.info;
-
-            const errors = [];
-            //validazione del form
-            validazioneForm(query,errors);
-            if (errors.length>0) {
-                response.writeHead(400,{"content-Type":"text/plain"});
-                response.write("il form non e' stato compilato correttamente"+" "+errors.join('<br>')+"\n");
-                response.end();
-            }
-            else{
-                console.log(nome+"\n"+cognome+"\n"+sesso+"\n"+nascita+"\n"+eta+"\n"+info+"\n");
-            }
-
-            break;
-
-        default:
-            response.writeHead(404, { "content-Type": "text/plain" });
-            response.end("nessuna pagina trovata");
-            break;
+function controlloText(testo, pattern) {
+    let controllo=false;
+    if (!pattern.test(testo) || !testo) {
+        controllo=true;
     }
+    return controllo;
 }
 
- */
+function controlloNumeri(number,pattern){
+    let controllo=false;
+    let eta=parseInt(number);
+    if (!isNaN(eta)) {
+        if (!pattern.test(eta) && eta<=0) {
+            controllo=true;
+        }
+    }
+    else{
+        controllo=true;
+    }
+
+    return controllo;
+}
 
 function requestHandler(request,response){
-    console.log(request.url);
-    let percorsoFile="."+request.url;
+
+    let oggettoUrl=url.parse(request.url,"true");
+    let percorsoFile="."+oggettoUrl.pathname;
+    console.log(percorsoFile);
     if (percorsoFile==="./") {
         percorsoFile="./index.html";
     }
@@ -87,9 +49,18 @@ function requestHandler(request,response){
 
         case ".js":
             estensioneFile="text/javascript";
+            break;
+        
+        case ".jpg":
+            estensioneFile="image/jpg";
+            break;
+
+        case ".img":
+            estensioneFile="image/img";
+            break;
     }
     
-    if (percorsoFile=="/recuperaDati") {
+    if (percorsoFile=="./recuperaDati") {
         console.log("sono dentro!");
         let messaggio = "";
         let invia=false;
@@ -99,23 +70,32 @@ function requestHandler(request,response){
         const sesso=oggettoUrl.query.scelta;
         const nascita=oggettoUrl.query.data_nascita;
         const eta=oggettoUrl.query.eta;
-        const info=oggettoUrl.query.info;
-        const regex = /^[a-zA-Z\s]+$/;//variabile di contorollo sui cui utilizzo una regular expression
+        const email=oggettoUrl.query.email;
+        const checkbox=oggettoUrl.query.cibo;
+        //const info=oggettoUrl.query.info;
+        const regexTesto = /^[a-zA-Z\s]+$/;//variabile di contorollo sui cui utilizzo una regular expression
+        const regexEta=/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+        const regexNumber= /^[0-9]+$/;
+        const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        console.log(controlloNumeri(eta,regexNumber));
+        
+
 
          let error=``;
-         if (!nome || !regex.test(nome)) {
+         if (controlloText(nome,regexTesto)) {
             invia=true;
             error+=`
-            <label for="nome" class="error">Nome:</label><br>
-            <input type="text" id="nome" name="inserisci un nome"><br>
+            <label for="nome" >Nome:</label><br>
+            <input class="error" type="text" id="nome" name="inserisci un nome"><br>
             `
          }
 
-         if (!cognome || !regex.test(cognome)) {
+         if (controlloText(cognome ,regexTesto)) {
             invia=true;
             error+=`
-            <label for="cognome" class="error">Cognome:</label><br>
-            <input type="text" id="cognome" name="inserisci un cognome"><br>
+            <label for="cognome" >Cognome:</label><br>
+            <input class="error" type="text" id="cognome" name="inserisci un cognome"><br>
             `
          }
 
@@ -123,35 +103,44 @@ function requestHandler(request,response){
             invia=true;
             error+=`
             <input type="radio" id="scelta" name="scelta" value="Uomo">
-            <label for="Uomo" class="error">Uomo</label><br>
+            <label class="errorLabels" for="Uomo" >Uomo</label><br>
             <input type="radio" id="scelta" name="scelta" value="Donna">
-            <label for="Donna" class="error">Donna</label><br>
+            <label class="errorLabels" for="Donna" >Donna</label><br>
             <input type="radio" id="scelta" name="scelta" value="non binario">
-            <label for="non_binario" class="error">Non binario</label><br>
+            <label class="errorLabels" for="non_binario" >Non binario</label><br>
             `
         }
     
-        if (!nascita) {
+        if (!regexEta.test(nascita) || !nascita) {
             invia=true;
             error+=`
-            <label for="data_nascita" class="error">data di nascita:</label><br>
-            <input type="date" id="data_nascita" name="data_nascita"><br>
+            <label for="data_nascita" >data di nascita:</label><br>
+            <input class="error" type="text" id="data_nascita" name="data_nascita"><br>
             `
         }
     
-        if (!eta) {
+        if (controlloNumeri(eta,regexNumber)) {
             invia=true;
             error+=`
-            <label for="eta" class="error">Età</label><br>
-            <input type="number" id="eta" name="eta"><br>
+            <label for="eta" >Età</label><br>
+            <input class="error" type="text" id="eta" name="eta"><br>
             `
-        } else if (isNaN(eta) || parseInt(eta) <= 0) {
-            invia=true;
-            error+=`
-            <label for="eta" class="error">Età</label><br>
-            <input type="number" id="eta" name="eta"><br>
-            `  
         }
+
+        if (!regexEmail.test(email) || !email) {
+            error+=`<label for="email">Email</label><br>
+            <input class="error" type="text" id="email" name="email"><br>`
+        }
+
+        /* if (!checkbox.some(check=>check!==undefined)) {
+            error+=`<p>Cibo Preferito</p><br>
+            <input class="error" type="checkbox" name="cibo" id="cibo1" value="pizza">
+            <label for="cibo1">Pizza</label><br>
+            <input class="error" type="checkbox" name="cibo" id="cibo2" value="pasta">
+            <label for="cibo2">Pasta</label><br>
+            <input class="error" type="checkbox" name="cibo" id="cibo3" value="risotto">
+            <label for="cibo3">Risotto</label><br>`
+        } */
 
         messaggio=`<!DOCTYPE html>
         <html lang="it">
@@ -190,6 +179,7 @@ function requestHandler(request,response){
     fs.readFile(percorsoFile,function(error,data){
         if (error) {
             response.writeHead(404);
+            response.write("pagina non trovata");
         }else{
             response.writeHead(200,{"content-Type":estensioneFile});
             response.write(data,"utf8");
