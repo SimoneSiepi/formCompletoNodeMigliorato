@@ -10,6 +10,10 @@ label{
     border: 1px solid red;
 }
 
+.errorLabels{
+  color: red;
+}
+
 
 * {
     box-sizing: border-box;

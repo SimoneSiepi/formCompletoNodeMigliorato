@@ -12,19 +12,35 @@ function controlloText(testo, pattern) {
     return controllo;
 }
 
-function controlloNumeri(number,pattern){
-    let controllo=false;
-    let eta=parseInt(number);
-    if (!isNaN(eta)) {
-        if (!pattern.test(eta) && eta<=0) {
-            controllo=true;
-        }
+function checkedRadio(radio,error) {
+    if (radio=="Uomo") {
+        error+=
+        `<input type="radio" id="scelta" name="scelta" value="Uomo" checked>
+        <label for="Uomo">Uomo</label><br>
+        <input type="radio" id="scelta" name="scelta" value="Donna">
+        <label for="Donna">Donna</label><br>
+        <input type="radio" id="scelta" name="scelta" value="non binario">
+        <label for="non_binario">Non binario</label><br>`;
+    }
+    else if (radio=="Donna") {
+        error+=
+        `<input type="radio" id="scelta" name="scelta" value="Uomo">
+        <label for="Uomo">Uomo</label><br>
+        <input type="radio" id="scelta" name="scelta" value="Donna" checked>
+        <label for="Donna">Donna</label><br>
+        <input type="radio" id="scelta" name="scelta" value="non binario">
+        <label for="non_binario">Non binario</label><br>`;
     }
     else{
-        controllo=true;
+        error+=
+        `<input type="radio" id="scelta" name="scelta" value="Uomo">
+        <label for="Uomo">Uomo</label><br>
+        <input type="radio" id="scelta" name="scelta" value="Donna">
+        <label for="Donna">Donna</label><br>
+        <input type="radio" id="scelta" name="scelta" value="non binario" checked>
+        <label for="non_binario">Non binario</label><br>`;
     }
-
-    return controllo;
+    return error;
 }
 
 function requestHandler(request,response){
@@ -61,7 +77,6 @@ function requestHandler(request,response){
     }
     
     if (percorsoFile=="./recuperaDati") {
-        console.log("sono dentro!");
         let messaggio = "";
         let invia=false;
         const query=oggettoUrl.query;
@@ -78,25 +93,34 @@ function requestHandler(request,response){
         const regexNumber= /^[0-9]+$/;
         const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-        console.log(controlloNumeri(eta,regexNumber));
-        
-
 
          let error=``;
          if (controlloText(nome,regexTesto)) {
             invia=true;
             error+=`
             <label for="nome" >Nome:</label><br>
-            <input class="error" type="text" id="nome" name="inserisci un nome"><br>
-            `
+            <input class="error" type="text" id="nome" name="nome"  value="inserisci nome"><br>
+            `;
+         }
+         else{
+            error+=`
+            <label for="nome" >Nome:</label><br>
+            <input type="text" id="nome" name="nome"  value="${nome}"><br>
+            `;
          }
 
          if (controlloText(cognome ,regexTesto)) {
             invia=true;
             error+=`
             <label for="cognome" >Cognome:</label><br>
-            <input class="error" type="text" id="cognome" name="inserisci un cognome"><br>
-            `
+            <input class="error" type="text" id="cognome" name="cognome" value="inserisci cognome"><br>
+            `;
+         }
+         else{
+            error+=`
+            <label for="cognome" >Cognome:</label><br>
+            <input type="text" id="cognome" name="cognome" value="${cognome}"><br>
+            `;
          }
 
          if (!sesso) {
@@ -108,39 +132,61 @@ function requestHandler(request,response){
             <label class="errorLabels" for="Donna" >Donna</label><br>
             <input type="radio" id="scelta" name="scelta" value="non binario">
             <label class="errorLabels" for="non_binario" >Non binario</label><br>
-            `
+            `;
+        }
+        else{
+            error=checkedRadio(sesso,error);//funzione che ritorna gli input radio con uno dei radio button checked
         }
     
         if (!regexEta.test(nascita) || !nascita) {
             invia=true;
             error+=`
             <label for="data_nascita" >data di nascita:</label><br>
-            <input class="error" type="text" id="data_nascita" name="data_nascita"><br>
-            `
+            <input class="error" type="text" id="data_nascita" name="data_nascita" value="inserisci data di nascita"><br>
+            `;
+        }
+        else{
+            error+=`
+            <label for="data_nascita" >data di nascita:</label><br>
+            <input type="text" id="data_nascita" name="data_nascita" value="${nascita}"><br>
+            `;
         }
     
-        if (controlloNumeri(eta,regexNumber)) {
+        if (controlloText(eta,regexNumber)) {
             invia=true;
             error+=`
             <label for="eta" >Età</label><br>
-            <input class="error" type="text" id="eta" name="eta"><br>
-            `
+            <input class="error" type="text" id="eta" name="eta" value="inserisci una eta valida"><br>
+            `;
+        }
+        else{
+            error+=`
+            <label for="eta" >Età</label><br>
+            <input type="text" id="eta" name="eta" value="${eta}"><br>
+            `;
         }
 
         if (!regexEmail.test(email) || !email) {
+            invia=true;
             error+=`<label for="email">Email</label><br>
-            <input class="error" type="text" id="email" name="email"><br>`
+            <input class="error" type="text" id="email" name="email" value="email non valida"><br>`;
+        }
+        else{
+            error+=
+            `<label for="email">Email</label><br>
+             <input type="text" id="email" name="email" value="${email}"><br>`;
         }
 
-        /* if (!checkbox.some(check=>check!==undefined)) {
+         if (!checkbox) {
+            invia=true;
             error+=`<p>Cibo Preferito</p><br>
-            <input class="error" type="checkbox" name="cibo" id="cibo1" value="pizza">
-            <label for="cibo1">Pizza</label><br>
-            <input class="error" type="checkbox" name="cibo" id="cibo2" value="pasta">
-            <label for="cibo2">Pasta</label><br>
-            <input class="error" type="checkbox" name="cibo" id="cibo3" value="risotto">
-            <label for="cibo3">Risotto</label><br>`
-        } */
+            <input type="checkbox" name="cibo" id="cibo1" value="pizza">
+            <label for="cibo1" class="errorLabels">Pizza</label><br>
+            <input type="checkbox" name="cibo" id="cibo2" value="pasta">
+            <label for="cibo2" class="errorLabels">Pasta</label><br>
+            <input type="checkbox" name="cibo" id="cibo3" value="risotto">
+            <label for="cibo3" class="errorLabels">Risotto</label><br>`;
+        }
 
         messaggio=`<!DOCTYPE html>
         <html lang="it">
@@ -159,7 +205,7 @@ function requestHandler(request,response){
         
             </form>
         </body>
-        </html> `
+        </html> `;
 
         if (invia==true) {
             response.writeHead(200,{'Content-Type': 'text/html'});
